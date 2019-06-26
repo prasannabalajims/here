@@ -7,9 +7,5 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'here';
-  selectedSubscription = 'premium';
-
-  onClickProceed() {
-    alert(this.selectedSubscription);
-  }
+  
 }

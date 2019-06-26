@@ -1,9 +1,11 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { MatSelectModule } from '@angular/material';
 
 import { AppComponent } from './app.component';
+import { SubscriptionModule } from './subscription/subscription.module';
+import { RouterModule } from '@angular/router';
+import { APP_ROUTES } from './app-routing.module';
 
 @NgModule({
   declarations: [
@@ -12,7 +14,9 @@ import { AppComponent } from './app.component';
   imports: [
     BrowserAnimationsModule,
     BrowserModule,
-    MatSelectModule    
+    RouterModule.forRoot(APP_ROUTES),
+    
+    SubscriptionModule
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -1,0 +1,9 @@
+<mat-form-field>
+  <mat-label>Subscription Model</mat-label>
+  <mat-select [(value)]="selectedSubscription">
+    <mat-option value="basic">Basic</mat-option>
+    <mat-option value="premium">Premium</mat-option>
+  </mat-select>
+</mat-form-field>
+
+<button mat-stroked-button color="primary" (click)="onClickProceed()">Proceed</button>
