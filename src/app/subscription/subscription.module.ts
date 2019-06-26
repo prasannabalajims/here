@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SubscriptionRegistryService } from './subscription-registry/subscription-registry.service';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [SubscriptionMethodComponent, SubscriptionRegistryComponent],
@@ -17,6 +18,7 @@ import { SubscriptionRegistryService } from './subscription-registry/subscriptio
     MatInputModule,
     MatFormFieldModule,
     MatIconModule,
+    MatButtonModule,
     CommonModule,
     ReactiveFormsModule,
     SubscriptionRoutingModule

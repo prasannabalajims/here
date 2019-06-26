@@ -1,15 +1,15 @@
 <div class="input-container">
   <form [formGroup]="formGroup">
     <div *ngFor="let control of formGroup.controls | keyvalue">
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <input matInput formControlName="{{control.key}}">
       </mat-form-field>
-      <mat-icon (click)="onRemoveBtnClick(control.key)" [class.disabled]="isRemoveDisabled(control.key)"> remove </mat-icon>
-      <mat-icon (click)="onAddBtnClick()" [class.disabled]="isAddDisabled(control.key)"> add </mat-icon>
+      <mat-icon class="ml-1 mr-1" (click)="onRemoveBtnClick(control.key)" [class.disabled]="isRemoveDisabled(control.key)"> remove </mat-icon>
+      <mat-icon class="ml-1 mr-1" (click)="onAddBtnClick()" [class.disabled]="isAddDisabled(control.key)"> add </mat-icon>
 
       <!-- TODO : Display error messages -->
     </div>
   </form>
-  
-  <button mat-stroked-button color="primary" [disabled]="!formGroup.valid" (click)="onClickSave()">SAVE</button>
+
+  <button mat-raised-button color="primary" [disabled]="!formGroup.valid" (click)="onClickSave()">SAVE</button>
 </div>
