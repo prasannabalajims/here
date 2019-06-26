@@ -17,6 +17,6 @@ export class SubscriptionMethodComponent implements OnInit {
   selectedSubscription = 'premium';
 
   onClickProceed() {
-    this._router.navigate(['/registry'], { queryParams: { subscriptionMethod: this.selectedSubscription } });
+    this._router.navigate(['/registry'], { queryParams: { subscriptionModel: this.selectedSubscription } });
   }
 }
