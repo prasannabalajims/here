@@ -23,15 +23,18 @@ export class SubscriptionRegistryComponent implements OnInit {
     private _registryService: SubscriptionRegistryService) { }
 
   ngOnInit() {
-    this.initFormGroup();
     this._router.queryParams.subscribe(params => {
       this.ipLimits = SubscriptionRangeEnum[params['subscriptionModel']];
     });
+    this.initFormGroup();
   }
 
   initFormGroup() {
     this.formGroup = new FormGroup({
       'input-0': new FormControl("", [Validators.required, IpPatternValidator(this.ipRegexPattern)])
+    });
+    this.formGroup.valueChanges.subscribe(value => {
+      this.toggleSaveBtn();
     });
     this.formControlCounter = 1;
   }
@@ -64,11 +67,12 @@ export class SubscriptionRegistryComponent implements OnInit {
    * This will update the localStorage with valid user entered values
    */
   onClickSave() {
-    let values = [];
-    for (let control of Object.keys(this.formGroup.controls)) {
-      values.push(this.formGroup.controls[control]['value']);
-    }
-    this._registryService.saveRegisteredIPs(values);
+    const values = Object.values(this.formGroup.controls)
+      .map(control => control.value)
+      .filter(element => { return element != "" });
+    const registeredIPs = values.join(",");
+
+    this._registryService.saveRegisteredIPs(registeredIPs);
     this.isSaveBtnDisabled = true;
   }
 
@@ -86,6 +90,35 @@ export class SubscriptionRegistryComponent implements OnInit {
     return index == this.ipLimits - 1 ? true : false;
   }
 
+  isSaveDisabled() {
+    if(this.formGroup.valid) {
+      return false;
+    }
+    
+    const controlsMap = Object.values(this.formGroup.controls).map(control => {
+      return {
+        value: control.value,
+        invalid: control.invalid
+      }
+    });
+
+    //Finding the count of Form fields with value as empty
+    const emptyValuesCount = controlsMap.filter(elements => { 
+      return elements.value == "" 
+    }).length;
+
+    //Finding the count of Form fields with value which is invalid
+    const invalidCount = controlsMap.filter(element => { 
+      return element.value != "" && element.invalid 
+    }).length;
+
+    if(emptyValuesCount == Object.keys(this.formGroup.controls).length || invalidCount > 0) {
+      return true;
+    }
+   
+    return false;
+  }
+
   toggleSaveBtn() {
     if (this.isSaveBtnDisabled) {
       this.isSaveBtnDisabled = false;
@@ -94,8 +127,10 @@ export class SubscriptionRegistryComponent implements OnInit {
 
   isDisplayValidationMsg(controlKey) {
     const control = this.formGroup.controls[controlKey];
-    if(control.invalid && (control.dirty || control.touched)) {
-      return true;
+    if (control.value.length != 0) {
+      if (control.invalid && (control.dirty || control.touched)) {
+        return true;
+      }
     }
     return false;
   }

@@ -2,7 +2,7 @@
   <form [formGroup]="formGroup">
     <div *ngFor="let control of formGroup.controls | keyvalue">
       <mat-form-field appearance="outline">
-        <input matInput formControlName="{{control.key}}" (keyup)="toggleSaveBtn()">
+        <input matInput formControlName="{{control.key}}">
       </mat-form-field>
       <mat-icon class="ml-1 mr-1" (click)="onRemoveBtnClick(control.key)" [class.disabled]="isRemoveDisabled(control.key)"> remove </mat-icon>
       <mat-icon class="ml-1 mr-1" (click)="onAddBtnClick()" [class.disabled]="isAddDisabled(control.key)"> add </mat-icon>
@@ -12,6 +12,6 @@
   </form>
 
   <div class="section mt-1">
-      <button mat-raised-button color="primary" [disabled]="!formGroup.valid || isSaveBtnDisabled" (click)="onClickSave()">SAVE</button>
+      <button mat-raised-button color="primary" [disabled]="isSaveBtnDisabled || isSaveDisabled()" (click)="onClickSave()">SAVE</button>
   </div>
 </div>
