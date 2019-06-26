@@ -17,6 +17,7 @@ export class SubscriptionRegistryComponent implements OnInit {
 
   ipLimits: any;
   ipRegexPattern: RegExp = new RegExp(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/);
+  isSaveBtnDisabled: boolean = true;
 
   constructor(private _router: ActivatedRoute,
     private _registryService: SubscriptionRegistryService) { }
@@ -43,6 +44,7 @@ export class SubscriptionRegistryComponent implements OnInit {
     if (Object.keys(this.formGroup.controls).length < this.ipLimits) {
       this.formGroup.addControl('input-' + this.formControlCounter, new FormControl("", [Validators.required, IpPatternValidator(this.ipRegexPattern)]));
       ++this.formControlCounter;
+      this.toggleSaveBtn();
     }
   }
 
@@ -54,6 +56,7 @@ export class SubscriptionRegistryComponent implements OnInit {
    */
   onRemoveBtnClick(controlKey) {
     this.formGroup.removeControl(controlKey);
+    this.toggleSaveBtn();
   }
 
   /**
@@ -66,6 +69,7 @@ export class SubscriptionRegistryComponent implements OnInit {
       values.push(this.formGroup.controls[control]['value']);
     }
     this._registryService.saveRegisteredIPs(values);
+    this.isSaveBtnDisabled = true;
   }
 
   isRemoveDisabled(controlKey) {
@@ -80,5 +84,19 @@ export class SubscriptionRegistryComponent implements OnInit {
     const controls = Object.keys(this.formGroup.controls);
     let index = controls.findIndex(control => control === controlKey);
     return index == this.ipLimits - 1 ? true : false;
+  }
+
+  toggleSaveBtn() {
+    if (this.isSaveBtnDisabled) {
+      this.isSaveBtnDisabled = false;
+    }
+  }
+
+  isDisplayValidationMsg(controlKey) {
+    const control = this.formGroup.controls[controlKey];
+    if(control.invalid && (control.dirty || control.touched)) {
+      return true;
+    }
+    return false;
   }
 }
