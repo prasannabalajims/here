@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { SubscriptionRangeEnum } from './subscription-range.enum';
-import { FormGroup, FormControl } from '@angular/forms';
+import { SubscriptionRangeEnum } from '../shared/subscription-range.enum';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { IpPatternValidator } from '../shared/ip-pattern.validator';
 
 @Component({
   selector: 'app-subscription-registry',
@@ -11,8 +12,10 @@ import { FormGroup, FormControl } from '@angular/forms';
 export class SubscriptionRegistryComponent implements OnInit {
 
   public formGroup: FormGroup;
+  formControlCounter: any;
+
   ipLimits: any;
-  formControlCounter = 1;
+  ipRegexPattern: RegExp = new RegExp(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/);
 
   constructor(private _router: ActivatedRoute) { }
 
@@ -25,8 +28,9 @@ export class SubscriptionRegistryComponent implements OnInit {
 
   initFormGroup() {
     this.formGroup = new FormGroup({
-      'input-0': new FormControl()
+      'input-0': new FormControl("", [Validators.required, IpPatternValidator(this.ipRegexPattern)])
     });
+    this.formControlCounter = 1;
   }
 
   /**
@@ -35,7 +39,7 @@ export class SubscriptionRegistryComponent implements OnInit {
    */
   onAddBtnClick() {
     if (Object.keys(this.formGroup.controls).length < this.ipLimits) {
-      this.formGroup.addControl('input-' + this.formControlCounter, new FormControl());
+      this.formGroup.addControl('input-' + this.formControlCounter, new FormControl("", [Validators.required, IpPatternValidator(this.ipRegexPattern)]));
       ++this.formControlCounter;
     }
   }
@@ -55,6 +59,7 @@ export class SubscriptionRegistryComponent implements OnInit {
    * This will update the localStorage with valid user entered values
    */
   onClickSave() {
+    //TODO : Wire it with service
     let values = [];
     for (let control of Object.keys(this.formGroup.controls)) {
       values.push(this.formGroup.controls[control]['value']);
@@ -63,14 +68,16 @@ export class SubscriptionRegistryComponent implements OnInit {
   }
 
   isRemoveDisabled(controlKey) {
+    //TODO : Revisit this logic
     const controls = Object.keys(this.formGroup.controls);
     let index = controls.findIndex(control => control === controlKey);
     return index == 0 ? true : false;
   }
 
   isAddDisabled(controlKey) {
+    //TODO : Revisit this logic
     const controls = Object.keys(this.formGroup.controls);
     let index = controls.findIndex(control => control === controlKey);
-    return index == this.ipLimits - 1 ? true : false;    
+    return index == this.ipLimits - 1 ? true : false;
   }
 }
