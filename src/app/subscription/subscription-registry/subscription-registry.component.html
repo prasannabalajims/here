@@ -4,8 +4,8 @@
       <mat-form-field appearance="fill">
         <input matInput formControlName="{{control.key}}">
       </mat-form-field>
-      <mat-icon (click)="onRemoveBtnClick(control.key)" *ngIf="true"> remove </mat-icon>
-      <mat-icon (click)="onAddBtnClick()"> add </mat-icon>
+      <mat-icon (click)="onRemoveBtnClick(control.key)" [class.disabled]="isRemoveDisabled(control.key)"> remove </mat-icon>
+      <mat-icon (click)="onAddBtnClick()" [class.disabled]="isAddDisabled(control.key)"> add </mat-icon>
     </div>
   </form>
   
