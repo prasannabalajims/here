@@ -1,5 +1,5 @@
 <div class="input-container">
-  <form [formGroup]="formGroup">
+  <form id="ip-input-form" [formGroup]="formGroup">
     <div *ngFor="let control of formGroup.controls | keyvalue">
       <mat-form-field appearance="outline">
         <input matInput formControlName="{{control.key}}">
