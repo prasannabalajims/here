@@ -77,17 +77,21 @@ export class SubscriptionRegistryComponent implements OnInit {
   }
 
   isRemoveDisabled(controlKey) {
-    //TODO : Revisit this logic
     const controls = Object.keys(this.formGroup.controls);
     let index = controls.findIndex(control => control === controlKey);
     return index == 0 ? true : false;
   }
 
   isAddDisabled(controlKey) {
-    //TODO : Revisit this logic
     const controls = Object.keys(this.formGroup.controls);
     let index = controls.findIndex(control => control === controlKey);
-    return index == this.ipLimits - 1 ? true : false;
+
+    //Ensuring only the last input field will have the add button and 
+    //the same will be disabled if the input reaches the threshold limit
+    if(index == controls.length - 1 && index != this.ipLimits - 1) {
+      return false;
+    } 
+    return true;
   }
 
   isSaveDisabled() {
