@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { SubscriptionRangeEnum } from '../shared/subscription-range.enum';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { IpPatternValidator } from '../shared/ip-pattern.validator';
+import { SubscriptionRegistryService } from './subscription-registry.service';
 
 @Component({
   selector: 'app-subscription-registry',
@@ -17,7 +18,8 @@ export class SubscriptionRegistryComponent implements OnInit {
   ipLimits: any;
   ipRegexPattern: RegExp = new RegExp(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/);
 
-  constructor(private _router: ActivatedRoute) { }
+  constructor(private _router: ActivatedRoute,
+    private _registryService: SubscriptionRegistryService) { }
 
   ngOnInit() {
     this.initFormGroup();
@@ -59,12 +61,11 @@ export class SubscriptionRegistryComponent implements OnInit {
    * This will update the localStorage with valid user entered values
    */
   onClickSave() {
-    //TODO : Wire it with service
     let values = [];
     for (let control of Object.keys(this.formGroup.controls)) {
       values.push(this.formGroup.controls[control]['value']);
     }
-    localStorage.setItem('RegisteredIPs', values.toString());
+    this._registryService.saveRegisteredIPs(values);
   }
 
   isRemoveDisabled(controlKey) {

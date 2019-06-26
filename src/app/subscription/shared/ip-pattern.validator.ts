@@ -1,7 +1,7 @@
 import { ValidatorFn, AbstractControl } from '@angular/forms';
 
 /**
- * Customer Validator to test the IP Address by using a Regex Pattern
+ * Custom Validator to test the IP Address by using a Regex Pattern
  */
 export function IpPatternValidator(pattern: RegExp) : ValidatorFn {
     return(control: AbstractControl): {[input: string]: any} | null => {

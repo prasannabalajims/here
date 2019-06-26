@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { ReactiveFormsModule } from '@angular/forms';
+import { SubscriptionRegistryService } from './subscription-registry/subscription-registry.service';
 
 @NgModule({
   declarations: [SubscriptionMethodComponent, SubscriptionRegistryComponent],
@@ -19,6 +20,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     ReactiveFormsModule,
     SubscriptionRoutingModule
-  ]
+  ],
+  providers: [SubscriptionRegistryService]
 })
 export class SubscriptionModule { }
