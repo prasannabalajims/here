@@ -17,7 +17,7 @@ export class SubscriptionRegistryComponent implements OnInit {
 
   ipLimits: any;
   ipRegexPattern: RegExp = new RegExp(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/);
-  isSaveBtnDisabled: boolean = true;
+  isSaveBtnDisabledOnSave: boolean = true;
 
   constructor(private _router: ActivatedRoute,
     private _registryService: SubscriptionRegistryService) { }
@@ -73,7 +73,7 @@ export class SubscriptionRegistryComponent implements OnInit {
     const registeredIPs = values.join(",");
 
     this._registryService.saveRegisteredIPs(registeredIPs);
-    this.isSaveBtnDisabled = true;
+    this.isSaveBtnDisabledOnSave = true;
   }
 
   isRemoveDisabled(controlKey) {
@@ -124,8 +124,8 @@ export class SubscriptionRegistryComponent implements OnInit {
   }
 
   toggleSaveBtn() {
-    if (this.isSaveBtnDisabled) {
-      this.isSaveBtnDisabled = false;
+    if (this.isSaveBtnDisabledOnSave) {
+      this.isSaveBtnDisabledOnSave = false;
     }
   }
 
