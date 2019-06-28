@@ -33,6 +33,7 @@ export class SubscriptionRegistryComponent implements OnInit {
     this.formGroup = new FormGroup({
       'input-0': new FormControl("", [Validators.required, IpPatternValidator(this.ipRegexPattern)])
     });
+    this.formGroup.controls['input-0']['displayError'] = false;
     this.formGroup.valueChanges.subscribe(value => {
       this.toggleSaveBtn();
     });
@@ -46,6 +47,7 @@ export class SubscriptionRegistryComponent implements OnInit {
   onAddBtnClick() {
     if (Object.keys(this.formGroup.controls).length < this.ipLimits) {
       this.formGroup.addControl('input-' + this.formControlCounter, new FormControl("", [Validators.required, IpPatternValidator(this.ipRegexPattern)]));
+      this.formGroup.controls['input-' + this.formControlCounter]['displayError'] = false;
       ++this.formControlCounter;
       this.toggleSaveBtn();
     }
@@ -58,7 +60,11 @@ export class SubscriptionRegistryComponent implements OnInit {
    * @param controlKey FormControl name which has to be removed from the form
    */
   onRemoveBtnClick(controlKey) {
-    this.formGroup.removeControl(controlKey);
+    if(controlKey === 'input-0') {
+      this.formGroup.controls[controlKey].reset();
+    } else {
+      this.formGroup.removeControl(controlKey);
+    }
     this.toggleSaveBtn();
   }
 
@@ -79,7 +85,15 @@ export class SubscriptionRegistryComponent implements OnInit {
   isRemoveDisabled(controlKey) {
     const controls = Object.keys(this.formGroup.controls);
     let index = controls.findIndex(control => control === controlKey);
-    return index == 0 ? true : false;
+    if(index == 0) {
+      //Condition ensuring if the first input has value, then the remove will not be disabled
+      //In such case, remove button will be used to clear the contents in the input field
+      const value = this.formGroup.controls[controlKey].value;
+      if(!value || (value && value.length == 0)) {
+        return true;
+      } 
+    } 
+    return false;
   }
 
   isAddDisabled(controlKey) {
@@ -108,7 +122,7 @@ export class SubscriptionRegistryComponent implements OnInit {
 
     //Finding the count of Form fields with value as empty
     const emptyValuesCount = controlsMap.filter(elements => { 
-      return elements.value == "" 
+      return elements.value == "" || elements.value == null || elements.value == undefined
     }).length;
 
     //Finding the count of Form fields with value which is invalid
@@ -129,13 +143,12 @@ export class SubscriptionRegistryComponent implements OnInit {
     }
   }
 
-  isDisplayValidationMsg(controlKey) {
+ validateInputOnChange(controlKey) {
     const control = this.formGroup.controls[controlKey];
-    if (control.value.length != 0) {
-      if (control.invalid && (control.dirty || control.touched)) {
-        return true;
-      }
+    if (control.value && control.value.length != 0 && control.invalid && (control.dirty || control.touched)) {
+      this.formGroup.controls[controlKey]['displayError'] = true;
+    } else {
+      this.formGroup.controls[controlKey]['displayError'] = false;
     }
-    return false;
   }
 }
