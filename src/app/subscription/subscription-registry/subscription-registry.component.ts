@@ -5,6 +5,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { IpPatternValidator } from '../shared/ip-pattern.validator';
 import { SubscriptionRegistryService } from './subscription-registry.service';
 
+const CONTROL_NAME = 'input-';
 @Component({
   selector: 'app-subscription-registry',
   templateUrl: './subscription-registry.component.html',
@@ -13,7 +14,7 @@ import { SubscriptionRegistryService } from './subscription-registry.service';
 export class SubscriptionRegistryComponent implements OnInit {
 
   public formGroup: FormGroup;
-  formControlCounter: any;
+  formControlCounter: any = 0;
 
   ipLimits: any;
   ipRegexPattern: RegExp = new RegExp(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/);
@@ -30,14 +31,15 @@ export class SubscriptionRegistryComponent implements OnInit {
   }
 
   initFormGroup() {
+    const key = CONTROL_NAME.concat(this.formControlCounter);
     this.formGroup = new FormGroup({
-      'input-0': new FormControl("", [Validators.required, IpPatternValidator(this.ipRegexPattern)])
+      [key] : new FormControl("", [Validators.required, IpPatternValidator(this.ipRegexPattern)])
     });
-    this.formGroup.controls['input-0']['displayError'] = false;
+    this.formGroup.controls[key]['displayError'] = false;
     this.formGroup.valueChanges.subscribe(value => {
       this.toggleSaveBtn();
     });
-    this.formControlCounter = 1;
+    ++this.formControlCounter;
   }
 
   /**
@@ -46,8 +48,9 @@ export class SubscriptionRegistryComponent implements OnInit {
    */
   onAddBtnClick() {
     if (Object.keys(this.formGroup.controls).length < this.ipLimits) {
-      this.formGroup.addControl('input-' + this.formControlCounter, new FormControl("", [Validators.required, IpPatternValidator(this.ipRegexPattern)]));
-      this.formGroup.controls['input-' + this.formControlCounter]['displayError'] = false;
+      const key = CONTROL_NAME.concat(this.formControlCounter);
+      this.formGroup.addControl(key, new FormControl("", [Validators.required, IpPatternValidator(this.ipRegexPattern)]));
+      this.formGroup.controls[key]['displayError'] = false;
       ++this.formControlCounter;
       this.toggleSaveBtn();
     }
@@ -60,8 +63,8 @@ export class SubscriptionRegistryComponent implements OnInit {
    * @param controlKey FormControl name which has to be removed from the form
    */
   onRemoveBtnClick(controlKey) {
-    if(controlKey === 'input-0') {
-      this.formGroup.controls[controlKey].reset();
+    if(controlKey === CONTROL_NAME.concat('0')) {
+      this.formGroup.controls[controlKey].setValue("");
     } else {
       this.formGroup.removeControl(controlKey);
     }
