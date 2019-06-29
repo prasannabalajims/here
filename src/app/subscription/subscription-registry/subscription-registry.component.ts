@@ -65,6 +65,7 @@ export class SubscriptionRegistryComponent implements OnInit {
   onRemoveBtnClick(controlKey) {
     if(controlKey === CONTROL_NAME.concat('0')) {
       this.formGroup.controls[controlKey].setValue("");
+      this.validateInputOnChange(controlKey);
     } else {
       this.formGroup.removeControl(controlKey);
     }
