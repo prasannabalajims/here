@@ -48,10 +48,6 @@ describe('SubscriptionRegistryComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
   it('Remove sign must be disabled for the 1st input box when there is no value', () => {
     const formElement = fixture.debugElement.query(By.css('#ip-input-form'));
     const inputElement = formElement.nativeElement.firstElementChild;
@@ -125,7 +121,7 @@ describe('SubscriptionRegistryComponent', () => {
     expect(saveBtn.disabled).toBeTruthy();
   });
 
-  it('Remove button should be enabled for first input box when there are no values present and the remove action should clear values in the input', () => {
+  it('Remove button should be enabled for first input box when there are values present and the remove action should clear values in the input', () => {
     fixture.componentInstance.formGroup.controls['input-0'].setValue("255.1.1.1");
     fixture.detectChanges();
 
@@ -138,5 +134,23 @@ describe('SubscriptionRegistryComponent', () => {
 
     expect(fixture.componentInstance.formGroup.controls['input-0'].value).toBe("");
     expect(inputElement.children[1].classList.contains('disabled')).toBeTruthy();
+  });
+
+  it('Save button should be enabled when there is only one input and the input box is dirty/touched', () => {
+    const saveBtn = fixture.debugElement.query(By.css('#save-btn')).nativeElement;
+    expect(saveBtn.disabled).toBeTruthy();
+
+    fixture.componentInstance.formGroup.controls['input-0'].setValue("255.1.1.1");
+    fixture.detectChanges();
+    expect(saveBtn.disabled).toBeFalsy();
+    
+    fixture.componentInstance.formGroup.controls['input-0'].setValue("");
+    fixture.componentInstance.formGroup.controls['input-0'].markAsDirty();
+    fixture.detectChanges();
+    expect(saveBtn.disabled).toBeFalsy();
+
+    fixture.componentInstance.onAddBtnClick();
+    fixture.detectChanges();
+    expect(saveBtn.disabled).toBeTruthy();
   });
 });
